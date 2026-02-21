@@ -1,0 +1,32 @@
+<nav class="navbar" [ngClass]="{ 'scrolled': isScrolled }">
+    <div class="nav-container">
+        <a routerLink="/home" class="nav-logo" (click)="closeMenu()">
+            <div class="aws-logo-badge">
+                <svg width="32" height="32" viewBox="0 0 80 80" fill="none">
+                    <path d="M22 50c-3.5 1.5-7 2.2-10 1.5 3.5 4 9 6.5 13 5.5L22 50z" fill="#FF9900" />
+                    <path d="M58 50c3.5 1.5 7 2.2 10 1.5-3.5 4-9 6.5-13 5.5L58 50z" fill="#FF9900" />
+                    <path
+                        d="M40 12C26.7 12 16 22.7 16 36c0 6 2.2 11.5 5.8 15.7L40 62l18.2-10.3C61.8 47.5 64 42 64 36c0-13.3-10.7-24-24-24z"
+                        fill="#FF9900" />
+                    <path d="M40 20c-8.8 0-16 7.2-16 16s7.2 16 16 16 16-7.2 16-16-7.2-16-16-16z" fill="#232F3E" />
+                    <text x="34" y="43" font-family="Arial" font-weight="900" font-size="18" fill="#FF9900">aws</text>
+                </svg>
+            </div>
+            <div class="nav-title">
+                <span class="nav-title-main">AWS Cloud Club</span>
+                <span class="nav-title-sub">SRIT</span>
+            </div>
+        </a>
+        <div class="nav-links" [ngClass]="{ 'open': isMenuOpen }">
+            <a routerLink="/home" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Home</a>
+            <a routerLink="/about" routerLinkActive="active" class="nav-link" (click)="closeMenu()">About</a>
+            <a routerLink="/services" routerLinkActive="active" class="nav-link" (click)="closeMenu()">What We Do</a>
+            <a routerLink="/events" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Events</a>
+            <a routerLink="/team" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Team</a>
+            <a routerLink="/join" routerLinkActive="active" class="nav-link nav-cta" (click)="closeMenu()">Join Club</a>
+        </div>
+        <button class="hamburger" [ngClass]="{ 'open': isMenuOpen }" (click)="toggleMenu()" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>

@@ -1,0 +1,108 @@
+<!-- ═══════════════════════════════════════ JOIN ═══════════════════════════════════════ -->
+<section class="join section" id="join">
+    <div class="join-bg">
+        <div class="join-glow"></div>
+    </div>
+    <div class="container">
+        <div class="join-inner">
+            <div class="join-text" appReveal>
+                <div class="section-label">Get Involved</div>
+                <h2 class="section-title">Ready to Join the <span class="text-gradient">AWS Family?</span></h2>
+                <p class="join-desc">
+                    Become part of SRIT's fastest-growing tech community. Get access to AWS resources, workshops,
+                    certifications, internships & more.
+                </p>
+                <ul class="join-perks">
+                    <li>✅ Free AWS credits for hands-on practice</li>
+                    <li>✅ Access to exclusive workshops & bootcamps</li>
+                    <li>✅ Certificate of membership from AWS</li>
+                    <li>✅ Networking with cloud professionals</li>
+                    <li>✅ Priority for hackathon teams & projects</li>
+                </ul>
+            </div>
+
+            <div class="join-form-wrap" appReveal>
+                <form class="join-form" (ngSubmit)="onSubmit()" #joinForm="ngForm" *ngIf="!isSuccess">
+                    <h3>Fill in your details</h3>
+
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" [(ngModel)]="formData.name"
+                            placeholder="Your full name" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">College Email</label>
+                        <input type="email" id="email" name="email" [(ngModel)]="formData.email"
+                            placeholder="yourname@srit.ac.in" required />
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="year">Year</label>
+                            <select id="year" name="year" [(ngModel)]="formData.year" required>
+                                <option value="" disabled selected>Select</option>
+                                <option value="1">1st Year</option>
+                                <option value="2">2nd Year</option>
+                                <option value="3">3rd Year</option>
+                                <option value="4">4th Year</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="branch">Branch</label>
+                            <select id="branch" name="branch" [(ngModel)]="formData.branch" required>
+                                <option value="" disabled selected>Select</option>
+                                <option value="CSE">CSE</option>
+                                <option value="IT">IT</option>
+                                <option value="ECE">ECE</option>
+                                <option value="EEE">EEE</option>
+                                <option value="MECH">MECH</option>
+                                <option value="CIVIL">CIVIL</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="interest">Area of Interest</label>
+                        <select id="interest" name="interest" [(ngModel)]="formData.interest" required>
+                            <option value="" disabled selected>Select your interest</option>
+                            <option value="cloud">Cloud Computing</option>
+                            <option value="ai">Machine Learning / AI</option>
+                            <option value="devops">DevOps & CI/CD</option>
+                            <option value="serverless">Serverless & Lambda</option>
+                            <option value="security">Security on AWS</option>
+                            <option value="all">All of the above</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full"
+                        [disabled]="!joinForm.form.valid || isSubmitting">
+                        <ng-container *ngIf="!isSubmitting">
+                            <span>Join AWS Cloud Club</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </ng-container>
+                        <ng-container *ngIf="isSubmitting">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" style="animation:spin 0.8s linear infinite">
+                                <path d="M21 12a9 9 0 11-6.219-8.56" />
+                            </svg>
+                            <span>Registering...</span>
+                        </ng-container>
+                    </button>
+                    <p class="form-note">By joining, you agree to be an active member of the SRIT AWS Cloud Club
+                        community.</p>
+                </form>
+
+                <div class="form-success fade-in" *ngIf="isSuccess">
+                    <div class="success-icon">🎉</div>
+                    <h3>Welcome to the Cloud Family!</h3>
+                    <p>Your registration has been received. We'll reach out to your college email within 2 business
+                        days.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

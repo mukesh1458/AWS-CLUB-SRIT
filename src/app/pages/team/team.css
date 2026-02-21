@@ -1,0 +1,182 @@
+/* ═══════════════════════════════ TEAM ═══════════════════════════════ */
+.team {
+    position: relative;
+    overflow: hidden;
+    background: var(--aws-dark-2);
+}
+
+.team-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.team-image {
+    position: absolute;
+    inset: 0;
+    background-image: url('https://res.cloudinary.com/dtoa5yyzt/image/upload/v1771612441/Gemini_Generated_Image_6w6xpe6w6xpe6w6x_imuyqu.png');
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-position: top;
+    opacity: 0.15;
+    mix-blend-mode: screen;
+    filter: saturate(0) contrast(1.1);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.1) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.1) 100%);
+    z-index: 0;
+}
+
+.team .container {
+    position: relative;
+    z-index: 1;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.team-card {
+    background: linear-gradient(145deg, rgba(26, 26, 36, 0.6), rgba(18, 18, 23, 0.4));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+}
+
+.team-card.core {
+    border-color: rgba(255, 153, 0, 0.2);
+    background: linear-gradient(135deg, var(--aws-dark-3), rgba(255, 153, 0, 0.04));
+}
+
+.team-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 153, 0, 0.05), transparent);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.team-card:hover {
+    border-color: var(--aws-orange);
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 153, 0, 0.15);
+}
+
+.team-card:hover::after {
+    opacity: 1;
+}
+
+.team-avatar {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.avatar-ring {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid var(--aws-orange);
+    animation: ring-spin 6s linear infinite;
+    border-top-color: transparent;
+    border-right-color: transparent;
+}
+
+@keyframes ring-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.avatar-img {
+    width: 72px;
+    height: 72px;
+    background: var(--aws-dark-4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--aws-border);
+}
+
+.team-info {
+    flex: 1;
+    z-index: 1;
+}
+
+.team-info h4 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.team-role {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--aws-orange);
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.team-dept {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.team-cert {
+    display: inline-block;
+    background: rgba(255, 153, 0, 0.08);
+    border: 1px solid rgba(255, 153, 0, 0.2);
+    color: var(--aws-orange);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 99px;
+}
+
+.team-social {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+    z-index: 1;
+}
+
+.team-social a {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--aws-border-soft);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 0.6rem;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.team-social a:hover {
+    border-color: var(--aws-orange);
+    color: var(--aws-orange);
+    background: rgba(255, 153, 0, 0.08);
+}
+
+@media (max-width: 768px) {
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+}

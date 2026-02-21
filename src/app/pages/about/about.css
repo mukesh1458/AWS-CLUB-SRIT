@@ -1,0 +1,205 @@
+/* ═══════════════════════════════ ABOUT ═══════════════════════════════ */
+.about {
+    position: relative;
+    overflow: hidden;
+    background: var(--aws-dark);
+}
+
+.about-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.about-image {
+    position: absolute;
+    inset: 0;
+    background-image: url('https://cache.careers360.mobi/media/presets/720X480/colleges/social-media/media-gallery/2087/2019/3/5/Campus%20Front%20%20View%20of%20Srinivasa%20Ramanujan%20Institute%20of%20Technology%20Anantapur_Campus-View.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.15;
+    mix-blend-mode: screen;
+    filter: saturate(0) contrast(1.1);
+    -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.1) 100%);
+    mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.1) 100%);
+    z-index: 0;
+}
+
+.about .container {
+    position: relative;
+    z-index: 1;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+}
+
+.about-visual {
+    position: relative;
+    height: 420px;
+}
+
+.about-card-main {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, var(--aws-dark-3), var(--aws-dark-4));
+    border: 1px solid var(--aws-border);
+    border-radius: var(--radius-lg);
+    padding: 40px 32px;
+    text-align: center;
+    width: 260px;
+    box-shadow: var(--shadow), var(--shadow-glow);
+}
+
+.card-icon-lg {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 153, 0, 0.08);
+    border-radius: var(--radius);
+    border: 1px solid rgba(255, 153, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+.about-card-main h3 {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.about-card-main p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+}
+
+.card-badge {
+    background: rgba(255, 153, 0, 0.12);
+    border: 1px solid rgba(255, 153, 0, 0.3);
+    color: var(--aws-orange);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 99px;
+    display: inline-block;
+}
+
+.about-floating-card {
+    position: absolute;
+    background: linear-gradient(135deg, var(--aws-dark-3), var(--aws-dark-4));
+    border: 1px solid var(--aws-border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: var(--shadow);
+    animation: float-card 4s ease-in-out infinite;
+}
+
+.about-floating-card>div {
+    display: flex;
+    flex-direction: column;
+}
+
+.about-floating-card strong {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.about-floating-card span {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.fc-1 {
+    top: 10%;
+    left: -20px;
+    animation-delay: 0s;
+}
+
+.fc-2 {
+    bottom: 10%;
+    right: -10px;
+    animation-delay: 2s;
+}
+
+@keyframes float-card {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.about-desc {
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+.about-features {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px;
+    background: var(--aws-dark-2);
+    border: 1px solid var(--aws-border-soft);
+    border-radius: var(--radius);
+    transition: var(--transition);
+}
+
+.feature-item:hover {
+    border-color: var(--aws-orange);
+    background: var(--aws-dark-3);
+    transform: translateX(6px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 153, 0, 0.08);
+}
+
+.feature-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.feature-item strong {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+}
+
+.feature-item span {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .about-visual {
+        height: 300px;
+    }
+}
