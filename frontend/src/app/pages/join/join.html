@@ -25,6 +25,11 @@
                 <form class="join-form" (ngSubmit)="onSubmit()" #joinForm="ngForm" *ngIf="!isSuccess">
                     <h3>Fill in your details</h3>
 
+                    <div *ngIf="errorMsg" class="alert alert-danger"
+                        style="color: #ff4d4d; background: rgba(255,0,0,0.1); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #ff4d4d;">
+                        {{ errorMsg }}
+                    </div>
+
                     <div class="form-group">
                         <label for="name">Full Name</label>
                         <input type="text" id="name" name="name" [(ngModel)]="formData.name"
@@ -35,6 +40,12 @@
                         <label for="email">College Email</label>
                         <input type="email" id="email" name="email" [(ngModel)]="formData.email"
                             placeholder="yourname@srit.ac.in" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Create Password</label>
+                        <input type="password" id="password" name="password" [(ngModel)]="formData.password"
+                            placeholder="••••••••" required minlength="6" />
                     </div>
 
                     <div class="form-row">
@@ -99,8 +110,7 @@
                 <div class="form-success fade-in" *ngIf="isSuccess">
                     <div class="success-icon">🎉</div>
                     <h3>Welcome to the Cloud Family!</h3>
-                    <p>Your registration has been received. We'll reach out to your college email within 2 business
-                        days.</p>
+                    <p>Your registration was successful. Redirecting you to the dashboard...</p>
                 </div>
             </div>
         </div>

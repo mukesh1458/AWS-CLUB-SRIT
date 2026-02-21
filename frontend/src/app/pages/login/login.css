@@ -1,0 +1,85 @@
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(82, 113, 255, 0.1), rgba(255, 145, 77, 0.1)),
+        radial-gradient(circle at top right, rgba(82, 113, 255, 0.15), transparent 400px),
+        radial-gradient(circle at bottom left, rgba(255, 145, 77, 0.15), transparent 400px);
+    background-color: var(--color-background);
+    padding: 2rem;
+}
+
+.login-glass-card {
+    background: rgba(var(--color-surface-rgb), 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+    border-radius: var(--radius-lg);
+    padding: 3rem;
+    width: 100%;
+    max-width: 450px;
+    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.header-content .title {
+    font-family: var(--font-primary);
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--color-aws), var(--color-primary-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.premium-input {
+    background: rgba(var(--color-surface-rgb), 0.5);
+    border: 1px solid rgba(var(--color-text-rgb), 0.1);
+    color: var(--color-text);
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+}
+
+.premium-input:focus {
+    background: var(--color-surface);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.2);
+    outline: none;
+}
+
+.premium-btn {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    border: none;
+    color: white;
+    padding: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(var(--color-primary-rgb), 0.3);
+}
+
+.premium-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(var(--color-primary-rgb), 0.4);
+}
+
+.premium-btn:disabled {
+    opacity: 0.7;
+    transform: none;
+    background: rgba(var(--color-text-rgb), 0.3);
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

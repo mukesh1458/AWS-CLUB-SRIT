@@ -1,0 +1,54 @@
+<div class="login-wrapper">
+    <div class="login-glass-card">
+        <div class="header-content text-center mb-4">
+            <h2 class="title">Welcome Back</h2>
+            <p class="subtitle text-muted">Log in to AWS Cloud Club SRIT</p>
+        </div>
+
+        <!-- Error Message Banner -->
+        <div *ngIf="errorMsg" class="alert alert-danger" role="alert">
+            {{ errorMsg }}
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+            <div class="form-group mb-3">
+                <label for="email" class="form-label">College Email Address</label>
+                <input type="email" id="email" class="form-control premium-input" formControlName="email"
+                    placeholder="e.g. 21XW1A0000@srit.edu.in"
+                    [ngClass]="{'is-invalid': loginForm.get('email')?.invalid && loginForm.get('email')?.touched}">
+                <div *ngIf="loginForm.get('email')?.errors?.['required']" class="invalid-feedback">
+                    Email is required.
+                </div>
+                <div *ngIf="loginForm.get('email')?.errors?.['email']" class="invalid-feedback">
+                    Please enter a valid email.
+                </div>
+            </div>
+
+            <div class="form-group mb-4">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" class="form-control premium-input" formControlName="password"
+                    placeholder="••••••••"
+                    [ngClass]="{'is-invalid': loginForm.get('password')?.invalid && loginForm.get('password')?.touched}">
+                <div *ngIf="loginForm.get('password')?.errors?.['required']" class="invalid-feedback">
+                    Password is required.
+                </div>
+                <div *ngIf="loginForm.get('password')?.errors?.['minlength']" class="invalid-feedback">
+                    Password must be at least 6 characters.
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 premium-btn" [disabled]="loginForm.invalid || isLoading">
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"
+                    aria-hidden="true"></span>
+                {{ isLoading ? 'Logging in...' : 'Sign In' }}
+            </button>
+
+        </form>
+
+        <div class="text-center mt-4 text-muted">
+            <small>Don't have an account? <a routerLink="/join" class="text-primary text-decoration-none fw-bold">Apply
+                    to Join</a></small>
+        </div>
+    </div>
+</div>
