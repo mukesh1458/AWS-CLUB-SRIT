@@ -5,6 +5,8 @@ import { RevealDirective } from '../../directives/reveal.directive';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 
+const COLLEGE_EMAIL_DOMAIN = '@srit.ac.in';
+
 @Component({
   selector: 'app-join',
   standalone: true,
@@ -16,6 +18,7 @@ export class Join {
   isSubmitting = false;
   isSuccess = false;
   errorMsg = '';
+  emailError = '';
 
   constructor(private authService: AuthService, private router: Router) { }
 
@@ -28,25 +31,48 @@ export class Join {
     interest: ''
   };
 
+  validateEmail(): boolean {
+    const email = this.formData.email.toLowerCase().trim();
+    if (!email.endsWith(COLLEGE_EMAIL_DOMAIN)) {
+      this.emailError = `Only SRIT college emails are allowed (e.g. yourname${COLLEGE_EMAIL_DOMAIN})`;
+      return false;
+    }
+    this.emailError = '';
+    return true;
+  }
+
+  onEmailChange() {
+    if (this.formData.email) {
+      this.validateEmail();
+    } else {
+      this.emailError = '';
+    }
+  }
+
   onSubmit() {
-    this.isSubmitting = true;
     this.errorMsg = '';
+
+    // College email check
+    if (!this.validateEmail()) {
+      return;
+    }
+
+    this.isSubmitting = true;
 
     const payload = {
       full_name: this.formData.name,
-      email: this.formData.email,
-      password: this.formData.password || 'Student@123' // Fallback if no UI field is present yet
+      email: this.formData.email.toLowerCase().trim(),
+      password: this.formData.password,
+      year: this.formData.year,
+      branch: this.formData.branch,
+      interest: this.formData.interest
     };
 
     this.authService.register(payload).subscribe({
-      next: (res) => {
+      next: () => {
         this.isSubmitting = false;
         this.isSuccess = true;
-
-        // Auto-login and navigate to dashboard after successful registration
-        setTimeout(() => {
-          this.router.navigate(['/dashboard']);
-        }, 2000);
+        // Do NOT auto-redirect — student is pending approval
       },
       error: (err) => {
         console.error('Registration failed:', err);

@@ -8,7 +8,7 @@ import { BehaviorSubject, tap } from 'rxjs';
 export class AuthService {
     private apiUrl = 'http://127.0.0.1:3001/api/auth';
     private tokenKey = 'aws_club_token';
-    private currentUserSubject = new BehaviorSubject<{ id: string, email: string, full_name: string, role: string } | null>(null);
+    private currentUserSubject = new BehaviorSubject<{ id: string, email: string, full_name: string, role: string, is_approved?: boolean } | null>(null);
 
     currentUser$ = this.currentUserSubject.asObservable();
 

@@ -19,11 +19,39 @@
         </a>
         <div class="nav-links" [ngClass]="{ 'open': isMenuOpen }">
             <a routerLink="/home" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Home</a>
-            <a routerLink="/about" routerLinkActive="active" class="nav-link" (click)="closeMenu()">About</a>
-            <a routerLink="/services" routerLinkActive="active" class="nav-link" (click)="closeMenu()">What We Do</a>
+
+            <div class="nav-dropdown">
+                <a class="nav-link dropdown-toggle">
+                    Discover <i class="bi bi-chevron-down"></i>
+                </a>
+                <div class="dropdown-menu">
+                    <a routerLink="/about" routerLinkActive="active" class="dropdown-item" (click)="closeMenu()">About
+                        Us</a>
+                    <a routerLink="/services" routerLinkActive="active" class="dropdown-item" (click)="closeMenu()">What
+                        We Do</a>
+                    <a routerLink="/team" routerLinkActive="active" class="dropdown-item" (click)="closeMenu()">Our
+                        Team</a>
+                </div>
+            </div>
+
             <a routerLink="/events" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Events</a>
-            <a routerLink="/team" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Team</a>
-            <a routerLink="/join" routerLinkActive="active" class="nav-link nav-cta" (click)="closeMenu()">Join Club</a>
+            <a routerLink="/resources" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Resources</a>
+
+            <div class="nav-divider d-none d-md-block"
+                style="width: 1px; height: 24px; background: rgba(255,255,255,0.1); margin: 0 8px;"></div>
+
+            <ng-container *ngIf="!(authService.currentUser$ | async)">
+                <a routerLink="/login" routerLinkActive="active" class="nav-link fw-bold"
+                    (click)="closeMenu()">Login</a>
+                <a routerLink="/join" routerLinkActive="active" class="nav-link nav-cta" (click)="closeMenu()">Join
+                    Club</a>
+            </ng-container>
+
+            <ng-container *ngIf="authService.currentUser$ | async as user">
+                <a *ngIf="user.role !== 'student'" [routerLink]="getDashboardLink()" class="nav-link nav-cta"
+                    (click)="closeMenu()">Dashboard</a>
+                <a href="javascript:void(0)" class="nav-link text-danger fw-bold" (click)="logout()">Logout</a>
+            </ng-container>
         </div>
         <button class="hamburger" [ngClass]="{ 'open': isMenuOpen }" (click)="toggleMenu()" aria-label="Toggle menu">
             <span></span><span></span><span></span>

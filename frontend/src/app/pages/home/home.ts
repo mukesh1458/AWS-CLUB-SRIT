@@ -1,10 +1,13 @@
 import { Component, ElementRef, OnInit, Renderer2, ViewChild, AfterViewInit, HostListener } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth/auth.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
@@ -15,9 +18,18 @@ export class Home implements OnInit, AfterViewInit {
   activeMembers = 0;
   eventsHosted = 0;
   certifications = 0;
+
+  // Real backend total count
+  totalEvents = 0;
   private countersStarted = false;
 
-  constructor(private renderer: Renderer2, private elRef: ElementRef) { }
+  constructor(
+    private renderer: Renderer2,
+    private elRef: ElementRef,
+    public authService: AuthService,
+    private router: Router,
+    private http: HttpClient
+  ) { }
 
   ngOnInit() {
     this.createParticles();
@@ -76,12 +88,13 @@ export class Home implements OnInit, AfterViewInit {
 
     if (isVisible) {
       this.countersStarted = true;
-      this.animateCounter('eventsHosted', 12);
+      // Animate the active members stat
+      this.animateCounter('activeMembers', 50);
       this.animateCounter('certifications', 0);
     }
   }
 
-  animateCounter(prop: 'eventsHosted' | 'certifications', target: number, duration = 1800) {
+  animateCounter(prop: 'activeMembers' | 'eventsHosted' | 'certifications', target: number, duration = 1800) {
     const startTime = performance.now();
 
     const step = (currentTime: number) => {
@@ -101,5 +114,12 @@ export class Home implements OnInit, AfterViewInit {
     };
 
     requestAnimationFrame(step);
+  }
+
+  getDashboardLink(): string {
+    const userRole = this.authService.currentUser?.role;
+    if (userRole === 'super_admin') return '/admin';
+    if (userRole === 'team_member') return '/team-dashboard';
+    return '/dashboard'; // Should not be reached based on UI logic
   }
 }

@@ -5,6 +5,7 @@ require('dotenv').config();
 const { supabase } = require('./supabaseClient');
 
 const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin');
 const { requireAuth, requireRole } = require('./middleware/authMiddleware');
 
 const app = express();
@@ -28,27 +29,25 @@ app.get('/api/test-db', async (req, res) => {
     }
 });
 
+const teamRoutes = require('./routes/team');
+const studentRoutes = require('./routes/student');
+const publicRoutes = require('./routes/public');
+
+// Public Data Routes (viewing events, resources without logging in)
+app.use('/api/public', publicRoutes);
+
 // Use Auth Routes
 app.use('/api/auth', authRoutes);
 
-// ==========================================
-// PROTECTED API ROUTE EXAMPLES 🛡️
-// ==========================================
+// Admin Management Routes (Shared by Super Admin & Team Admin for approvals)
+app.use('/api/admin', requireAuth, requireRole(['super_admin', 'team_member']), adminRoutes);
 
-// 1. Super Admin Only Route (e.g., Dashboard Analytics, Invite Team)
-app.get('/api/admin/dashboard', requireAuth, requireRole(['super_admin']), (req, res) => {
-    res.json({ message: "Welcome Super Admin! Here are the core metrics.", user: req.user });
-});
+// Team Admin Routes (Creating Events/Resources)
+app.use('/api/team', requireAuth, requireRole(['super_admin', 'team_member']), teamRoutes);
 
-// 2. Team Member & Super Admin Route (e.g., Manage Events)
-app.post('/api/team/events', requireAuth, requireRole(['super_admin', 'team_member']), (req, res) => {
-    res.json({ message: "Event created successfully! Only Team and Admins can do this.", user: req.user });
-});
-
-// 3. Any Authenticated Student/User Route (e.g., Student Profile)
-app.get('/api/student/profile', requireAuth, (req, res) => {
-    res.json({ message: "Welcome Student! Here is your profile data.", user: req.user });
-});
+// Student Routes (Viewing events/resources, registering)
+// Note: Internal logic in studentRoutes checks if `is_approved === true`
+app.use('/api/student', requireAuth, requireRole(['student', 'team_member', 'super_admin']), studentRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {

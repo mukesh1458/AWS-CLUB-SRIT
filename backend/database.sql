@@ -10,19 +10,33 @@ CREATE TABLE profiles (
     email TEXT UNIQUE NOT NULL,
     full_name TEXT NOT NULL,
     role user_role DEFAULT 'student',
+    is_approved BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- 3. Trigger to automatically create a profile when a new user signs up
 CREATE OR REPLACE FUNCTION public.handle_new_user() 
 RETURNS TRIGGER AS $$
+DECLARE
+  v_role user_role;
+  v_is_approved BOOLEAN;
 BEGIN
-  INSERT INTO public.profiles (id, email, full_name, role)
+  v_role := COALESCE((NEW.raw_user_meta_data->>'role')::user_role, 'student');
+  
+  -- Auto-approve admins and team members. Students require manual approval.
+  IF v_role IN ('super_admin', 'team_member') THEN
+    v_is_approved := TRUE;
+  ELSE
+    v_is_approved := FALSE;
+  END IF;
+
+  INSERT INTO public.profiles (id, email, full_name, role, is_approved)
   VALUES (
     NEW.id,
     NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'full_name', 'Student User'),
-    COALESCE((NEW.raw_user_meta_data->>'role')::user_role, 'student')
+    v_role,
+    v_is_approved
   )
   ON CONFLICT (id) DO NOTHING;
   RETURN NEW;

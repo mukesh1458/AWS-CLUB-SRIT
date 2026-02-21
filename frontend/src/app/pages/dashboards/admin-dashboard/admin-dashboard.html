@@ -1,30 +1,105 @@
-<div class="dashboard-wrapper">
-    <div class="glass-container mt-5 p-5 border-danger">
-        <h1 class="text-danger">👑 Super Admin Dashboard</h1>
-        <p class="lead mt-3">Full Administrative Control Panel.</p>
+<div class="dash-root">
+    <div class="dash-bg">
+        <div class="db-glow gl-1"></div>
+        <div class="db-glow gl-2"></div>
+        <div class="db-grid"></div>
+    </div>
 
-        <div class="row mt-5">
-            <div class="col-md-4">
-                <div class="glass-card p-4 border-danger">
-                    <h3>👥 Members</h3>
-                    <p>Promote students to Team Members, manage rosters.</p>
-                    <button class="btn btn-danger w-100">User Management</button>
+    <main class="dash-main">
+
+        <!-- ── Header ── -->
+        <header class="dash-header" appReveal>
+            <div class="dash-header-left">
+                <div class="dash-role-chip"><i class="bi bi-shield-lock-fill"></i> Super Admin</div>
+                <h1 class="dash-title">Admin Dashboard</h1>
+                <p class="dash-subtitle">Welcome back, <strong>Super Admin</strong>.</p>
+            </div>
+            <div class="dash-avatar">A</div>
+        </header>
+
+        <!-- ── Stats ── -->
+        <div class="stat-row" appReveal [style.transition-delay]="'80ms'">
+            <div class="stat-card sc-orange">
+                <div class="sc-icon"><i class="bi bi-hourglass-split"></i></div>
+                <div class="sc-body">
+                    <span class="sc-val">{{ pendingUsers.length }}</span>
+                    <span class="sc-label">Pending</span>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="glass-card p-4 border-danger">
-                    <h3>📈 Analytics</h3>
-                    <p>Club growth, event attendance stats, and activity logs.</p>
-                    <button class="btn btn-danger w-100">View Reports</button>
+            <div class="stat-card sc-cyan">
+                <div class="sc-icon"><i class="bi bi-calendar-event"></i></div>
+                <div class="sc-body">
+                    <span class="sc-val">{{ totalEvents !== null ? totalEvents : '…' }}</span>
+                    <span class="sc-label">Total Events</span>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="glass-card p-4 border-danger">
-                    <h3>⚙️ Settings</h3>
-                    <p>Global club settings and API configurations.</p>
-                    <button class="btn btn-outline-danger w-100">System Config</button>
+            <div class="stat-card sc-green">
+                <div class="sc-icon"><i class="bi bi-people-fill"></i></div>
+                <div class="sc-body">
+                    <span class="sc-val">{{ totalStudents !== null ? totalStudents : '…' }}</span>
+                    <span class="sc-label">Approved Students</span>
+                </div>
+            </div>
+            <div class="stat-card sc-purple">
+                <div class="sc-icon"><i class="bi bi-folder2-open"></i></div>
+                <div class="sc-body">
+                    <span class="sc-val">{{ totalResources !== null ? totalResources : '…' }}</span>
+                    <span class="sc-label">Resources Uploaded</span>
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- ── Main Grid ── -->
+        <div class="dash-grid single-col">
+
+            <!-- Pending Approvals -->
+            <section class="dash-card" appReveal [style.transition-delay]="'120ms'">
+                <div class="dcard-header">
+                    <div class="dcard-title"><i class="bi bi-person-check-fill text-warning"></i> Pending Approvals
+                    </div>
+                    <span class="pill pill-warn" *ngIf="pendingUsers.length > 0">{{ pendingUsers.length }} new</span>
+                </div>
+
+                <div *ngIf="pendingUsers.length === 0" class="empty-state">
+                    <i class="bi bi-check2-circle text-success"></i>
+                    <p>All caught up — no pending students!</p>
+                </div>
+
+                <div class="list-group list-group-flush pending-list" *ngIf="pendingUsers.length > 0">
+                    <div *ngFor="let user of pendingUsers" class="list-group-item pending-item">
+                        <div class="user-meta">
+                            <h6 class="mb-1 fw-bold text-white">{{ user.full_name }}</h6>
+                            <p class="mb-0 text-muted small">
+                                <i class="bi bi-envelope me-1"></i>{{ user.email }}
+                            </p>
+                            <div class="student-details mt-2">
+                                <span class="badge bg-dark border border-secondary text-light me-2">Year: {{ user.year
+                                    || 'N/A' }}</span>
+                                <span class="badge bg-dark border border-secondary text-light">Branch: {{ user.branch ||
+                                    'N/A' }}</span>
+                            </div>
+                        </div>
+                        <div class="action-btn" style="display:flex; gap: 10px; align-items: center;">
+                            <!-- Approve -->
+                            <button class="btn btn-sm btn-success premium-btn-sm" (click)="approveUser(user.id)"
+                                [disabled]="isApproving[user.id] || isRejecting[user.id]">
+                                <span *ngIf="isApproving[user.id]" class="spinner-border spinner-border-sm"
+                                    role="status" aria-hidden="true"></span>
+                                <span *ngIf="!isApproving[user.id]"><i class="bi bi-check-lg me-1"></i> Approve</span>
+                            </button>
+                            <!-- Reject -->
+                            <button class="btn btn-sm premium-btn-sm btn-reject" (click)="rejectUser(user.id)"
+                                [disabled]="isApproving[user.id] || isRejecting[user.id]">
+                                <span *ngIf="isRejecting[user.id]" class="spinner-border spinner-border-sm"
+                                    role="status" aria-hidden="true"></span>
+                                <span *ngIf="!isRejecting[user.id]"><i class="bi bi-x-lg me-1"></i> Reject</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
 </div>

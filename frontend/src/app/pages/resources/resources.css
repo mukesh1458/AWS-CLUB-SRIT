@@ -1,0 +1,143 @@
+/* ═══════════════════════════════ RESOURCES ═══════════════════════════════ */
+.resources {
+    position: relative;
+    overflow: hidden;
+    background: var(--aws-dark);
+}
+
+.resources-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.resources-glow {
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(235, 122, 2, 0.08) 0%, rgba(0, 0, 0, 0) 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.resources .container {
+    position: relative;
+    z-index: 1;
+}
+
+.resources-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.resource-card {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(145deg, rgba(26, 26, 36, 0.6), rgba(18, 18, 23, 0.4));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    transition: all 0.3s ease;
+}
+
+.resource-card:hover {
+    border-color: var(--aws-orange);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 153, 0, 0.1);
+    background: var(--aws-dark-3);
+}
+
+.res-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 153, 0, 0.1);
+    border: 1px solid rgba(255, 153, 0, 0.2);
+    border-radius: 12px;
+    color: var(--aws-orange);
+    margin-right: 24px;
+    flex-shrink: 0;
+}
+
+.res-body {
+    flex: 1;
+}
+
+.res-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+}
+
+.res-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.res-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.res-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.res-action {
+    margin-left: 20px;
+    flex-shrink: 0;
+}
+
+.fade-in {
+    animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .resource-card {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .res-icon {
+        margin-bottom: 16px;
+    }
+
+    .res-action {
+        margin-left: 0;
+        margin-top: 20px;
+        width: 100%;
+    }
+
+    .res-action .btn {
+        width: 100%;
+    }
+}

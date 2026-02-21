@@ -16,101 +16,78 @@
                 Events</button>
         </div>
 
-        <!-- Upcoming -->
+        <!-- Alert messages -->
+        <div *ngIf="alertMsg" class="alert fade-in mb-4"
+            [ngClass]="alertType === 'success' ? 'alert-success' : 'alert-danger'">
+            <i class="bi"
+                [ngClass]="alertType === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-octagon-fill'"></i>
+            {{ alertMsg }}
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="activeTab === 'upcoming' && upcomingEvents.length === 0"
+            class="text-center fade-in text-muted my-5">
+            <i class="bi bi-calendar-x display-4"></i>
+            <p class="mt-3">No upcoming events right now. Check back soon!</p>
+        </div>
+        <div *ngIf="activeTab === 'past' && pastEvents.length === 0" class="text-center fade-in text-muted my-5">
+            <i class="bi bi-archive display-4"></i>
+            <p class="mt-3">No past events to display.</p>
+        </div>
+
+        <!-- Upcoming Data Loop -->
         <div class="events-grid" *ngIf="activeTab === 'upcoming'">
-            <div class="event-card fade-in" appReveal appTilt>
+            <div class="event-card fade-in" appReveal appTilt *ngFor="let evt of upcomingEvents">
                 <div class="event-date">
-                    <span class="event-day">15</span>
-                    <span class="event-month">MAR</span>
+                    <span class="event-day">{{ evt.date | date:'dd' }}</span>
+                    <span class="event-month">{{ evt.date | date:'MMM' }}</span>
                 </div>
                 <div class="event-body">
-                    <div class="event-type">Workshop</div>
-                    <h3>AWS Solutions Architect Bootcamp</h3>
-                    <p>A full-day bootcamp covering AWS architectural best practices, design patterns, and real
-                        solutions.</p>
+                    <div class="event-type">Club Event</div>
+                    <h3>{{ evt.title }}</h3>
+                    <p>{{ evt.description }}</p>
                     <div class="event-meta">
-                        <span>📍 SRIT Seminar Hall</span>
-                        <span>⏰ 9:00 AM – 5:00 PM</span>
+                        <span>📍 {{ evt.location }}</span>
+                        <span>⏰ {{ evt.date | date:'shortTime' }}</span>
                     </div>
                 </div>
                 <div class="event-action">
-                    <a href="/join" class="btn btn-sm">Register</a>
-                </div>
-            </div>
-            <div class="event-card fade-in" appReveal [style.transition-delay]="'80ms'" appTilt>
-                <div class="event-date">
-                    <span class="event-day">28</span>
-                    <span class="event-month">MAR</span>
-                </div>
-                <div class="event-body">
-                    <div class="event-type">Hackathon</div>
-                    <h3>CloudSprint 2025 — 24hr Hackathon</h3>
-                    <p>Build cloud-native solutions in 24 hours. Compete for AWS credits, swag, and cash prizes worth
-                        ₹50,000.</p>
-                    <div class="event-meta">
-                        <span>📍 SRIT Incubation Center</span>
-                        <span>⏰ 10:00 AM (24hrs)</span>
-                    </div>
-                </div>
-                <div class="event-action">
-                    <a href="/join" class="btn btn-sm">Register</a>
-                </div>
-            </div>
-            <div class="event-card fade-in" appReveal [style.transition-delay]="'160ms'" appTilt>
-                <div class="event-date">
-                    <span class="event-day">10</span>
-                    <span class="event-month">APR</span>
-                </div>
-                <div class="event-body">
-                    <div class="event-type">Tech Talk</div>
-                    <h3>AI on AWS — SageMaker Deep Dive</h3>
-                    <p>Industry expert from AWS India shares insights on training, deploying, and scaling ML models
-                        using SageMaker.</p>
-                    <div class="event-meta">
-                        <span>📍 Online + SRIT CS Lab</span>
-                        <span>⏰ 3:00 PM – 5:00 PM</span>
-                    </div>
-                </div>
-                <div class="event-action">
-                    <a href="/join" class="btn btn-sm">Register</a>
+                    <!-- Button logic -->
+                    <button *ngIf="isLoggedIn && isApproved && !evt.isRegistered" class="btn btn-sm btn-orange"
+                        (click)="registerForEvent(evt.id)" [disabled]="isRegistering[evt.id]">
+                        <span *ngIf="isRegistering[evt.id]" class="spinner-border spinner-border-sm me-1"></span>
+                        Register
+                    </button>
+
+                    <button *ngIf="isLoggedIn && isApproved && evt.isRegistered" class="btn btn-sm btn-outline-success"
+                        disabled>
+                        ✓ Registered
+                    </button>
+
+                    <button *ngIf="isLoggedIn && !isApproved" class="btn btn-sm btn-outline-secondary" disabled
+                        title="Pending Admin Approval">
+                        🔒 Pending Admin Approval
+                    </button>
+
+                    <a *ngIf="!isLoggedIn" href="/login" class="btn btn-sm btn-outline-orange">Log In to Register</a>
                 </div>
             </div>
         </div>
 
-        <!-- Past -->
+        <!-- Past Data Loop -->
         <div class="events-grid" *ngIf="activeTab === 'past'">
-            <div class="event-card past fade-in" appReveal appTilt>
+            <div class="event-card past fade-in" appReveal appTilt *ngFor="let evt of pastEvents">
                 <div class="event-date">
-                    <span class="event-day">20</span>
-                    <span class="event-month">JAN</span>
+                    <span class="event-day">{{ evt.date | date:'dd' }}</span>
+                    <span class="event-month">{{ evt.date | date:'MMM' }}</span>
                 </div>
                 <div class="event-body">
-                    <div class="event-type">Workshop</div>
-                    <h3>Getting Started with AWS Cloud</h3>
-                    <p>Introductory hands-on workshop covering core AWS services — 85 students attended and got free AWS
-                        credits.</p>
+                    <div class="event-type">Past Event</div>
+                    <h3>{{ evt.title }}</h3>
+                    <p>{{ evt.description }}</p>
                     <div class="event-meta">
-                        <span>📍 SRIT CS Department</span>
-                        <span>✅ 85 Attendees</span>
-                    </div>
-                </div>
-                <div class="event-action">
-                    <span class="past-label">Completed</span>
-                </div>
-            </div>
-            <div class="event-card past fade-in" appReveal [style.transition-delay]="'80ms'" appTilt>
-                <div class="event-date">
-                    <span class="event-day">05</span>
-                    <span class="event-month">FEB</span>
-                </div>
-                <div class="event-body">
-                    <div class="event-type">Certification Drive</div>
-                    <h3>AWS Cloud Practitioner Exam Sprint</h3>
-                    <p>2-week intensive certification prep that helped 30+ students achieve the AWS Cloud Practitioner
-                        badge.</p>
-                    <div class="event-meta">
-                        <span>📍 SRIT Library</span>
-                        <span>✅ 30+ Certified</span>
+                        <span>📍 {{ evt.location }}</span>
+                        <span>🗓️ {{ evt.date | date:'mediumDate' }}</span>
                     </div>
                 </div>
                 <div class="event-action">

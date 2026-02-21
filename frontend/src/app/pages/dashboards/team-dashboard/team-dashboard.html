@@ -1,23 +1,271 @@
-<div class="dashboard-wrapper">
-    <div class="glass-container mt-5 p-5">
-        <h1 class="text-primary">🛡️ Team Member Dashboard</h1>
-        <p class="lead mt-3">Manage activities and curate resources for the club.</p>
-
-        <div class="row mt-5">
-            <div class="col-md-6">
-                <div class="glass-card p-4 border-primary">
-                    <h3>📝 Manage Events</h3>
-                    <p>Create, update, and track attendance for workshops.</p>
-                    <button class="btn btn-primary w-100">Event Studio</button>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="glass-card p-4 border-primary">
-                    <h3>📁 Resource Vault</h3>
-                    <p>Upload PDFs, slides, and study materials for students.</p>
-                    <button class="btn btn-primary w-100">Upload Material</button>
-                </div>
-            </div>
-        </div>
+<div class="dash-root">
+    <div class="dash-bg">
+        <div class="db-glow gl-1"></div>
+        <div class="db-glow gl-2"></div>
+        <div class="db-grid"></div>
     </div>
+
+    <!-- Global Alert -->
+    <div class="global-alert fade-in" *ngIf="alertMsg" [ngClass]="alertType">
+        <i class="bi" [ngClass]="alertType === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'"></i>
+        {{ alertMsg }}
+    </div>
+
+    <main class="dash-main">
+        <!-- ── Header ── -->
+        <header class="dash-header" appReveal>
+            <div class="dash-header-left">
+                <div class="dash-role-chip"><i class="bi bi-person-workspace text-cyan"></i> Team Admin</div>
+                <h1 class="dash-title">Workspace</h1>
+                <p class="dash-subtitle">Welcome, <strong>Team Admin</strong>.</p>
+            </div>
+
+            <div class="header-actions">
+                <!-- Avatar Upload -->
+                <div class="avatar-upload-zone">
+                    <div class="avatar-preview" [class.uploading]="isUploadingAvatar">
+                        <img *ngIf="avatarUrl" [src]="avatarUrl" alt="Avatar">
+                        <span *ngIf="!avatarUrl">T</span>
+
+                        <div class="avatar-overlay">
+                            <i class="bi bi-camera-fill"></i>
+                        </div>
+                        <input type="file" class="file-input-hidden" accept="image/*"
+                            (change)="onAvatarFileSelected($event)">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ════════ MAIN VIEW ════════ -->
+        <ng-container *ngIf="activeView === 'main'">
+            <!-- Action Cards -->
+            <div class="action-row" appReveal [style.transition-delay]="'80ms'">
+                <div class="action-card ac-orange" (click)="setView('event')">
+                    <div class="ac-icon"><i class="bi bi-calendar2-plus"></i></div>
+                    <div class="ac-text">
+                        <h3>Event Studio</h3>
+                        <p>Draft and publish a new event</p>
+                    </div>
+                    <i class="bi bi-arrow-right ac-arrow"></i>
+                </div>
+
+                <div class="action-card ac-purple" (click)="setView('resource')">
+                    <div class="ac-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                    <div class="ac-text">
+                        <h3>Resource Vault</h3>
+                        <p>Upload PDFs and learning materials</p>
+                    </div>
+                    <i class="bi bi-arrow-right ac-arrow"></i>
+                </div>
+            </div>
+
+            <!-- Approvals Section -->
+            <section class="dash-card mt-4" appReveal [style.transition-delay]="'120ms'">
+                <div class="dcard-header">
+                    <div class="dcard-title"><i class="bi bi-person-check-fill text-warning"></i> Pending Students</div>
+                    <span class="pill pill-warn" *ngIf="pendingUsers.length > 0">{{ pendingUsers.length }} new</span>
+                </div>
+
+                <div *ngIf="pendingUsers.length === 0" class="empty-state">
+                    <i class="bi bi-check2-circle text-success"></i>
+                    <p>No students awaiting approval.</p>
+                </div>
+
+                <div class="list-group list-group-flush pending-list" *ngIf="pendingUsers.length > 0">
+                    <div *ngFor="let user of pendingUsers" class="list-group-item pending-item">
+                        <div class="user-meta">
+                            <h6 class="mb-1 fw-bold text-white">{{ user.full_name }}</h6>
+                            <p class="mb-0 text-muted small"><i class="bi bi-envelope me-1"></i>{{ user.email }}</p>
+                            <div class="student-details mt-2">
+                                <span class="badge bg-dark border border-secondary text-light me-2">Year: {{ user.year
+                                    || 'N/A' }}</span>
+                                <span class="badge bg-dark border border-secondary text-light">Branch: {{ user.branch ||
+                                    'N/A' }}</span>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; gap: 10px;">
+                            <button class="btn btn-sm btn-success premium-btn-sm" (click)="approveUser(user.id)"
+                                [disabled]="isApproving[user.id] || isRejecting[user.id]">
+                                <span *ngIf="isApproving[user.id]" class="spinner-border spinner-border-sm"></span>
+                                <span *ngIf="!isApproving[user.id]"><i class="bi bi-check-lg me-1"></i> Approve</span>
+                            </button>
+                            <button class="btn btn-sm premium-btn-sm btn-reject" (click)="rejectUser(user.id)"
+                                [disabled]="isApproving[user.id] || isRejecting[user.id]">
+                                <span *ngIf="isRejecting[user.id]" class="spinner-border spinner-border-sm"></span>
+                                <span *ngIf="!isRejecting[user.id]"><i class="bi bi-x-lg me-1"></i> Reject</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </ng-container>
+
+
+        <!-- ════════ EVENT STUDIO VIEW ════════ -->
+        <ng-container *ngIf="activeView === 'event'">
+            <div class="view-header fade-in">
+                <button class="btn-back" (click)="setView('main')"><i class="bi bi-arrow-left"></i> Back to
+                    Workspace</button>
+                <h2 class="view-title text-orange"><i class="bi bi-calendar-event me-2"></i> Event Studio</h2>
+            </div>
+
+            <div class="dash-card form-card fade-in">
+                <form [formGroup]="eventForm" (ngSubmit)="onSubmitEvent()">
+                    <div class="form-group mb-3">
+                        <label>Event Title</label>
+                        <input type="text" class="premium-input" formControlName="title"
+                            placeholder="e.g. AWS Security Immersion Day">
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Date & Time</label>
+                                <input type="datetime-local" class="premium-input" formControlName="date">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Location</label>
+                                <input type="text" class="premium-input" formControlName="location"
+                                    placeholder="e.g. Room 402 / WebEx">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label>Description</label>
+                        <textarea class="premium-input" rows="4" formControlName="description"
+                            placeholder="What will students learn?"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit btn-orange"
+                        [disabled]="eventForm.invalid || isSubmittingEvent">
+                        <span *ngIf="isSubmittingEvent" class="spinner-border spinner-border-sm me-2"></span>
+                        Publish Event
+                    </button>
+                </form>
+            </div>
+
+            <!-- Existing Events List -->
+            <div class="dash-card mt-5 fade-in" style="animation-delay: 0.1s;">
+                <div class="dcard-header">
+                    <div class="dcard-title"><i class="bi bi-collection text-orange"></i> Existing Events</div>
+                    <span class="pill pill-warn" *ngIf="events.length > 0">{{ events.length }} total</span>
+                </div>
+
+                <div *ngIf="events.length === 0" class="empty-state">
+                    <i class="bi bi-calendar-x text-muted"></i>
+                    <p>No events published yet.</p>
+                </div>
+
+                <div class="list-group list-group-flush pending-list" *ngIf="events.length > 0">
+                    <div *ngFor="let evt of events" class="list-group-item pending-item">
+                        <div class="user-meta" style="flex: 1;">
+                            <h6 class="mb-1 fw-bold text-white">{{ evt.title }}</h6>
+                            <p class="mb-2 text-muted small"><i class="bi bi-geo-alt me-1"></i>{{ evt.location }} &bull;
+                                <i class="bi bi-calendar-event me-1"></i>{{ evt.date | date:'short' }}
+                            </p>
+                            <p class="mb-0 text-secondary" style="font-size: 0.85rem;">{{ evt.description }}</p>
+                        </div>
+
+                        <button class="btn btn-sm btn-outline-danger premium-btn-sm" (click)="deleteEvent(evt.id)"
+                            [disabled]="isDeletingEvent[evt.id]">
+                            <span *ngIf="isDeletingEvent[evt.id]" class="spinner-border spinner-border-sm"></span>
+                            <span *ngIf="!isDeletingEvent[evt.id]"><i class="bi bi-trash3-fill me-1"></i> Delete</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+
+        <!-- ════════ RESOURCE VAULT VIEW ════════ -->
+        <ng-container *ngIf="activeView === 'resource'">
+            <div class="view-header fade-in">
+                <button class="btn-back" (click)="setView('main')"><i class="bi bi-arrow-left"></i> Back to
+                    Workspace</button>
+                <h2 class="view-title text-purple"><i class="bi bi-cloud-arrow-up me-2"></i> Resource Vault</h2>
+            </div>
+
+            <div class="dash-card form-card fade-in">
+                <form [formGroup]="resourceForm" (ngSubmit)="onSubmitResource()">
+                    <div class="form-group mb-3">
+                        <label>Resource Title</label>
+                        <input type="text" class="premium-input" formControlName="title"
+                            placeholder="e.g. S3 Bucket Fundamentals PDF">
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>Description</label>
+                        <textarea class="premium-input" rows="2" formControlName="description"
+                            placeholder="Brief context about this material"></textarea>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label>Upload File (PDF or Image)</label>
+                        <div class="file-drop-zone" [class.has-file]="!!resourceFile">
+                            <input type="file" class="file-input-visible" (change)="onResourceFileSelected($event)">
+                            <div class="drop-content" *ngIf="!resourceFile">
+                                <i class="bi bi-cloud-upload"></i>
+                                <p>Click to browse files</p>
+                            </div>
+                            <div class="drop-content file-selected" *ngIf="resourceFile">
+                                <i class="bi bi-file-earmark-check-fill text-success"></i>
+                                <p class="mb-0 text-white">{{ resourceFile.name }}</p>
+                                <small class="text-muted">{{ (resourceFile.size / 1024 / 1024).toFixed(2) }} MB</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit btn-purple"
+                        [disabled]="resourceForm.invalid || !resourceFile || isSubmittingResource">
+                        <span *ngIf="isSubmittingResource" class="spinner-border spinner-border-sm me-2"></span>
+                        Upload to Vault
+                    </button>
+                </form>
+            </div>
+
+            <!-- Existing Resources List -->
+            <div class="dash-card mt-5 fade-in" style="animation-delay: 0.1s;">
+                <div class="dcard-header">
+                    <div class="dcard-title"><i class="bi bi-folder-fill text-purple"></i> Existing Resources</div>
+                    <span class="pill pill-warn" *ngIf="resources.length > 0">{{ resources.length }} total</span>
+                </div>
+
+                <div *ngIf="resources.length === 0" class="empty-state">
+                    <i class="bi bi-file-earmark-x text-muted"></i>
+                    <p>No resources uploaded yet.</p>
+                </div>
+
+                <div class="list-group list-group-flush pending-list" *ngIf="resources.length > 0">
+                    <div *ngFor="let res of resources" class="list-group-item pending-item">
+                        <div class="user-meta" style="flex: 1;">
+                            <h6 class="mb-1 fw-bold text-white">{{ res.title }}</h6>
+                            <p class="mb-2 text-muted small"><i class="bi bi-clock me-1"></i>{{ res.created_at |
+                                date:'short' }}</p>
+                            <p class="mb-0 text-secondary" style="font-size: 0.85rem;">{{ res.description }}</p>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2">
+                            <a [href]="res.file_url" target="_blank"
+                                class="btn btn-sm btn-outline-secondary premium-btn-sm">
+                                <i class="bi bi-box-arrow-up-right me-1"></i> View
+                            </a>
+                            <button class="btn btn-sm btn-outline-danger premium-btn-sm"
+                                (click)="deleteResource(res.id)" [disabled]="isDeletingResource[res.id]">
+                                <span *ngIf="isDeletingResource[res.id]"
+                                    class="spinner-border spinner-border-sm"></span>
+                                <span *ngIf="!isDeletingResource[res.id]"><i class="bi bi-trash3-fill me-1"></i>
+                                    Delete</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+    </main>
 </div>

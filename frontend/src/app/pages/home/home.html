@@ -7,20 +7,24 @@
         <div class="hero-glow glow-1"></div>
         <div class="hero-glow glow-2"></div>
     </div>
+
     <div class="hero-content">
         <div class="hero-badge" appReveal>
             <span class="badge-dot"></span>
             <span>Est 2025 • First Chapter at SRIT</span>
         </div>
+
         <h1 class="hero-title" appReveal [style.transition-delay]="'100ms'">
             Launch Your Cloud<br>
             Career with <span class="text-gradient">AWS</span>
         </h1>
+
         <p class="hero-subtitle" appReveal [style.transition-delay]="'200ms'">
             Be part of SRIT's inaugural Amazon Web Services community — <strong>for the students, by the
                 students</strong>. Learn, build, and certify with hands-on
             cloud experience.
         </p>
+
         <div class="hero-stats" appReveal [style.transition-delay]="'400ms'">
             <div class="stat-item">
                 <div><span class="stat-number">Pioneers</span></div>
@@ -28,20 +32,41 @@
             </div>
             <div class="stat-divider"></div>
             <div class="stat-item">
-                <div><span class="stat-number">{{ eventsHosted }}</span><span class="stat-plus">+</span></div>
-                <span class="stat-label">Upcoming Events</span>
+                <div>
+                    <span class="stat-number">{{ activeMembers }}</span>
+                    <span class="stat-plus">+</span>
+                </div>
+                <span class="stat-label">Active Members</span>
             </div>
         </div>
+
         <div class="hero-actions">
-            <a routerLink="/join" class="btn btn-primary">
+            <!-- Dynamic CTA based on auth state -->
+            <a *ngIf="!(authService.currentUser$ | async)" routerLink="/join" class="btn btn-primary premium-btn">
                 <span>Join the Club</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
+                <i class="bi bi-arrow-right ms-2"></i>
             </a>
-            <a routerLink="/events" class="btn btn-secondary">Explore Events</a>
+
+            <!-- Authenticated CTA logic -->
+            <ng-container *ngIf="authService.currentUser$ | async as user">
+                <!-- Only structural admins get a direct dashboard route from Home -->
+                <a *ngIf="user.role !== 'student'" [routerLink]="getDashboardLink()"
+                    class="btn btn-primary premium-btn">
+                    <span>Go to Dashboard</span>
+                    <i class="bi bi-layout-text-window ms-2"></i>
+                </a>
+
+                <!-- Students get a direct link to the Vault instead of the Dashboard -->
+                <a *ngIf="user.role === 'student'" routerLink="/resources" class="btn btn-primary premium-btn">
+                    <span>Access Resources</span>
+                    <i class="bi bi-folder-fill ms-2"></i>
+                </a>
+            </ng-container>
+
+            <a routerLink="/events" class="btn btn-secondary premium-btn">Explore Events</a>
         </div>
     </div>
+
     <div class="hero-scroll">
         <div class="scroll-indicator">
             <div class="scroll-dot"></div>

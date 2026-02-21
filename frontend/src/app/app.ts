@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { Navbar } from './components/navbar/navbar';
 import { Footer } from './components/footer/footer';
 import { routeTransition } from './app.animations';
@@ -7,7 +8,7 @@ import { routeTransition } from './app.animations';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Navbar, Footer],
+  imports: [RouterOutlet, CommonModule, Navbar, Footer],
   templateUrl: './app.html',
   styleUrl: './app.css',
   animations: [routeTransition]

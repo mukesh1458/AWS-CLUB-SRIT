@@ -6,6 +6,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const authService = inject(AuthService);
     const token = authService.token;
 
+    if (req.url.includes('api.cloudinary.com')) {
+        return next(req);
+    }
+
     if (token) {
         // Clone the request and add the authorization header
         const authReq = req.clone({
