@@ -17,11 +17,12 @@
     background-image: url('https://cache.careers360.mobi/media/presets/720X480/colleges/social-media/media-gallery/2087/2019/3/5/Campus%20Front%20%20View%20of%20Srinivasa%20Ramanujan%20Institute%20of%20Technology%20Anantapur_Campus-View.jpg');
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
     opacity: 0.15;
     mix-blend-mode: screen;
     filter: saturate(0) contrast(1.1);
-    -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.1) 100%);
-    mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.1) 100%);
+    -webkit-mask-image: radial-gradient(ellipse at 50% 30%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 75%);
+    mask-image: radial-gradient(ellipse at 50% 30%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 75%);
     z-index: 0;
 }
 

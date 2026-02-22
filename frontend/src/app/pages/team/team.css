@@ -15,14 +15,14 @@
     position: absolute;
     inset: 0;
     background-image: url('https://res.cloudinary.com/dtoa5yyzt/image/upload/v1771612441/Gemini_Generated_Image_6w6xpe6w6xpe6w6x_imuyqu.png');
-    background-size: 100% auto;
+    background-size: cover;
     background-repeat: no-repeat;
-    background-position: top;
+    background-position: center;
     opacity: 0.15;
     mix-blend-mode: screen;
     filter: saturate(0) contrast(1.1);
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.1) 100%);
-    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.1) 100%);
+    -webkit-mask-image: radial-gradient(ellipse at 50% 30%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 75%);
+    mask-image: radial-gradient(ellipse at 50% 30%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 75%);
     z-index: 0;
 }
 

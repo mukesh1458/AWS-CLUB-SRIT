@@ -15,14 +15,14 @@
     position: absolute;
     inset: 0;
     background-image: url('https://tse1.mm.bing.net/th/id/OIP.LrTaCu-MR5ENdnc2Kn-5MAHaFj?rs=1&pid=ImgDetMain&o=7&rm=3');
-    background-size: 100% auto;
+    background-size: cover;
     background-repeat: no-repeat;
-    background-position: top;
+    background-position: center;
     opacity: 0.15;
     mix-blend-mode: screen;
     filter: saturate(0) contrast(1.1);
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.1) 100%);
-    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.1) 100%);
+    -webkit-mask-image: radial-gradient(ellipse at 50% 30%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 75%);
+    mask-image: radial-gradient(ellipse at 50% 30%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 75%);
     z-index: 0;
 }
 
