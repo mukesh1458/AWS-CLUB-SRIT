@@ -1,8 +1,12 @@
 const express = require('express');
 const cloudinary = require('cloudinary').v2;
 const { supabaseAdmin } = require('../supabaseClient');
+const NodeCache = require('node-cache');
 
 const router = express.Router();
+
+// Initialize short-lived cache (1 minute) for admin stats
+const adminCache = new NodeCache({ stdTTL: 60 });
 
 // Configure Cloudinary
 cloudinary.config({
@@ -58,6 +62,10 @@ router.post('/approve-user/:id', async (req, res) => {
             .select();
 
         if (error) throw error;
+
+        // Invalidate stats cache since a user was approved
+        adminCache.del('admin_stats');
+
         res.status(200).json({ message: 'User approved successfully', user: data[0] });
     } catch (err) {
         console.error('Approve user error:', err);
@@ -92,6 +100,9 @@ router.delete('/reject-user/:id', async (req, res) => {
         const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(id);
         if (authError) console.warn('Auth delete warning (non-fatal):', authError.message);
 
+        // Invalidate stats cache
+        adminCache.del('admin_stats');
+
         res.status(200).json({ message: 'User rejected and removed successfully' });
     } catch (err) {
         console.error('Reject user error:', err);
@@ -109,17 +120,24 @@ router.get('/stats', async (req, res) => {
     }
 
     try {
+        const cacheKey = 'admin_stats';
+        const cached = adminCache.get(cacheKey);
+        if (cached) return res.status(200).json(cached);
+
         const [studentsRes, eventsRes, resourcesRes] = await Promise.all([
             supabaseAdmin.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'student').eq('is_approved', true),
             supabaseAdmin.from('events').select('id', { count: 'exact', head: true }),
             supabaseAdmin.from('resources').select('id', { count: 'exact', head: true }),
         ]);
 
-        res.status(200).json({
+        const stats = {
             totalStudents: studentsRes.count || 0,
             totalEvents: eventsRes.count || 0,
             totalResources: resourcesRes.count || 0,
-        });
+        };
+
+        adminCache.set(cacheKey, stats);
+        res.status(200).json(stats);
     } catch (err) {
         console.error('Stats error:', err);
         res.status(500).json({ error: err.message });
@@ -200,6 +218,9 @@ router.delete('/resources/:id', async (req, res) => {
             .eq('id', id);
 
         if (error) throw error;
+
+        // Invalidate stats
+        adminCache.del('admin_stats');
 
         res.status(200).json({ message: 'Resource deleted successfully' });
     } catch (err) {

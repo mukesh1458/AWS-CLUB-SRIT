@@ -64,15 +64,24 @@
             <section class="dash-card mt-4" appReveal [style.transition-delay]="'120ms'">
                 <div class="dcard-header">
                     <div class="dcard-title"><i class="bi bi-person-check-fill text-warning"></i> Pending Students</div>
-                    <span class="pill pill-warn" *ngIf="pendingUsers.length > 0">{{ pendingUsers.length }} new</span>
+                    <span class="pill pill-warn" *ngIf="pendingUsers.length > 0 && !isLoadingUsers">{{
+                        pendingUsers.length }} new</span>
                 </div>
 
-                <div *ngIf="pendingUsers.length === 0" class="empty-state">
+                <!-- Loading State -->
+                <div *ngIf="isLoadingUsers" class="empty-state">
+                    <div class="spinner-border text-warning mb-3" style="width: 3rem; height: 3rem;" role="status">
+                    </div>
+                    <p>Loading pending students...</p>
+                </div>
+
+                <div *ngIf="!isLoadingUsers && pendingUsers.length === 0" class="empty-state">
                     <i class="bi bi-check2-circle text-success"></i>
                     <p>No students awaiting approval.</p>
                 </div>
 
-                <div class="list-group list-group-flush pending-list" *ngIf="pendingUsers.length > 0">
+                <div class="list-group list-group-flush pending-list"
+                    *ngIf="!isLoadingUsers && pendingUsers.length > 0">
                     <div *ngFor="let user of pendingUsers" class="list-group-item pending-item">
                         <div class="user-meta">
                             <h6 class="mb-1 fw-bold text-white">{{ user.full_name }}</h6>
@@ -153,15 +162,22 @@
             <div class="dash-card mt-5 fade-in" style="animation-delay: 0.1s;">
                 <div class="dcard-header">
                     <div class="dcard-title"><i class="bi bi-collection text-orange"></i> Existing Events</div>
-                    <span class="pill pill-warn" *ngIf="events.length > 0">{{ events.length }} total</span>
+                    <span class="pill pill-warn" *ngIf="events.length > 0 && !isLoadingEvents">{{ events.length }}
+                        total</span>
                 </div>
 
-                <div *ngIf="events.length === 0" class="empty-state">
+                <!-- Loading State -->
+                <div *ngIf="isLoadingEvents" class="empty-state">
+                    <div class="spinner-border text-orange mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+                    <p>Loading events...</p>
+                </div>
+
+                <div *ngIf="!isLoadingEvents && events.length === 0" class="empty-state">
                     <i class="bi bi-calendar-x text-muted"></i>
                     <p>No events published yet.</p>
                 </div>
 
-                <div class="list-group list-group-flush pending-list" *ngIf="events.length > 0">
+                <div class="list-group list-group-flush pending-list" *ngIf="!isLoadingEvents && events.length > 0">
                     <div *ngFor="let evt of events" class="list-group-item pending-item">
                         <div class="user-meta" style="flex: 1;">
                             <h6 class="mb-1 fw-bold text-white">{{ evt.title }}</h6>
@@ -171,11 +187,21 @@
                             <p class="mb-0 text-secondary" style="font-size: 0.85rem;">{{ evt.description }}</p>
                         </div>
 
-                        <button class="btn btn-sm btn-outline-danger premium-btn-sm" (click)="deleteEvent(evt.id)"
-                            [disabled]="isDeletingEvent[evt.id]">
-                            <span *ngIf="isDeletingEvent[evt.id]" class="spinner-border spinner-border-sm"></span>
-                            <span *ngIf="!isDeletingEvent[evt.id]"><i class="bi bi-trash3-fill me-1"></i> Delete</span>
-                        </button>
+                        <div class="d-flex align-items-center" style="gap: 12px;">
+                            <button class="btn btn-sm btn-outline-info premium-btn-sm" (click)="viewRegistrations(evt)"
+                                [disabled]="isFetchingRegistrations[evt.id]">
+                                <span *ngIf="isFetchingRegistrations[evt.id]"
+                                    class="spinner-border spinner-border-sm"></span>
+                                <span *ngIf="!isFetchingRegistrations[evt.id]"><i class="bi bi-people-fill"></i>
+                                    Registrations</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger premium-btn-sm" (click)="deleteEvent(evt.id)"
+                                [disabled]="isDeletingEvent[evt.id]">
+                                <span *ngIf="isDeletingEvent[evt.id]" class="spinner-border spinner-border-sm"></span>
+                                <span *ngIf="!isDeletingEvent[evt.id]"><i class="bi bi-trash3-fill"></i>
+                                    Delete</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -232,15 +258,23 @@
             <div class="dash-card mt-5 fade-in" style="animation-delay: 0.1s;">
                 <div class="dcard-header">
                     <div class="dcard-title"><i class="bi bi-folder-fill text-purple"></i> Existing Resources</div>
-                    <span class="pill pill-warn" *ngIf="resources.length > 0">{{ resources.length }} total</span>
+                    <span class="pill pill-warn" *ngIf="resources.length > 0 && !isLoadingResources">{{ resources.length
+                        }} total</span>
                 </div>
 
-                <div *ngIf="resources.length === 0" class="empty-state">
+                <!-- Loading State -->
+                <div *ngIf="isLoadingResources" class="empty-state">
+                    <div class="spinner-border text-purple mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+                    <p>Loading resources...</p>
+                </div>
+
+                <div *ngIf="!isLoadingResources && resources.length === 0" class="empty-state">
                     <i class="bi bi-file-earmark-x text-muted"></i>
                     <p>No resources uploaded yet.</p>
                 </div>
 
-                <div class="list-group list-group-flush pending-list" *ngIf="resources.length > 0">
+                <div class="list-group list-group-flush pending-list"
+                    *ngIf="!isLoadingResources && resources.length > 0">
                     <div *ngFor="let res of resources" class="list-group-item pending-item">
                         <div class="user-meta" style="flex: 1;">
                             <h6 class="mb-1 fw-bold text-white">{{ res.title }}</h6>
@@ -249,7 +283,7 @@
                             <p class="mb-0 text-secondary" style="font-size: 0.85rem;">{{ res.description }}</p>
                         </div>
 
-                        <div class="d-flex align-items-center gap-2">
+                        <div class="d-flex align-items-center" style="gap: 12px;">
                             <a [href]="res.file_url" target="_blank"
                                 class="btn btn-sm btn-outline-secondary premium-btn-sm">
                                 <i class="bi bi-box-arrow-up-right me-1"></i> View
@@ -261,6 +295,44 @@
                                 <span *ngIf="!isDeletingResource[res.id]"><i class="bi bi-trash3-fill me-1"></i>
                                     Delete</span>
                             </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <!-- ════════ EVENT REGISTRATIONS VIEW ════════ -->
+        <ng-container *ngIf="activeView === 'registrations'">
+            <div class="view-header fade-in">
+                <button class="btn-back" (click)="setView('event')"><i class="bi bi-arrow-left"></i> Back to Event
+                    Studio</button>
+                <h2 class="view-title text-info"><i class="bi bi-people-fill me-2"></i> {{ selectedEvent?.title }}</h2>
+                <p class="dash-subtitle mt-1">Total Registrations: <strong>{{ eventRegistrations.length }}</strong></p>
+            </div>
+
+            <div class="dash-card mt-4 fade-in">
+                <div class="dcard-header">
+                    <div class="dcard-title"><i class="bi bi-list-check text-info"></i> Registered Students</div>
+                </div>
+
+                <div *ngIf="eventRegistrations.length === 0" class="empty-state">
+                    <i class="bi bi-person-x text-muted"></i>
+                    <p>No students have registered for this event yet.</p>
+                </div>
+
+                <div class="list-group list-group-flush pending-list" *ngIf="eventRegistrations.length > 0">
+                    <div *ngFor="let reg of eventRegistrations" class="list-group-item pending-item">
+                        <div class="user-meta" style="flex: 1;">
+                            <h6 class="mb-1 fw-bold text-white">{{ reg.full_name }}</h6>
+                            <p class="mb-2 text-muted small"><i class="bi bi-envelope me-1"></i>{{ reg.email }} &bull;
+                                <i class="bi bi-clock me-1"></i>Registered on {{ reg.registered_at | date:'short' }}
+                            </p>
+                            <div class="student-details">
+                                <span class="badge bg-dark border border-secondary text-light me-2">Year: {{ reg.year ||
+                                    'N/A' }}</span>
+                                <span class="badge bg-dark border border-secondary text-light">Branch: {{ reg.branch ||
+                                    'N/A' }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>

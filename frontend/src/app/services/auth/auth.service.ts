@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    private apiUrl = 'http://127.0.0.1:3001/api/auth';
+    private apiUrl = `${environment.apiUrl}/auth`;
     private tokenKey = 'aws_club_token';
     private currentUserSubject = new BehaviorSubject<{ id: string, email: string, full_name: string, role: string, is_approved?: boolean } | null>(null);
 

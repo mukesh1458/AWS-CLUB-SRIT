@@ -24,19 +24,26 @@
             {{ alertMsg }}
         </div>
 
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="text-center fade-in text-muted my-5">
+            <div class="spinner-border text-orange mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+            <p class="mt-3">Loading events...</p>
+        </div>
+
         <!-- Empty State -->
-        <div *ngIf="activeTab === 'upcoming' && upcomingEvents.length === 0"
+        <div *ngIf="!isLoading && activeTab === 'upcoming' && upcomingEvents.length === 0"
             class="text-center fade-in text-muted my-5">
             <i class="bi bi-calendar-x display-4"></i>
             <p class="mt-3">No upcoming events right now. Check back soon!</p>
         </div>
-        <div *ngIf="activeTab === 'past' && pastEvents.length === 0" class="text-center fade-in text-muted my-5">
+        <div *ngIf="!isLoading && activeTab === 'past' && pastEvents.length === 0"
+            class="text-center fade-in text-muted my-5">
             <i class="bi bi-archive display-4"></i>
             <p class="mt-3">No past events to display.</p>
         </div>
 
         <!-- Upcoming Data Loop -->
-        <div class="events-grid" *ngIf="activeTab === 'upcoming'">
+        <div class="events-grid" *ngIf="!isLoading && activeTab === 'upcoming'">
             <div class="event-card fade-in" appReveal appTilt *ngFor="let evt of upcomingEvents">
                 <div class="event-date">
                     <span class="event-day">{{ evt.date | date:'dd' }}</span>
@@ -75,7 +82,7 @@
         </div>
 
         <!-- Past Data Loop -->
-        <div class="events-grid" *ngIf="activeTab === 'past'">
+        <div class="events-grid" *ngIf="!isLoading && activeTab === 'past'">
             <div class="event-card past fade-in" appReveal appTilt *ngFor="let evt of pastEvents">
                 <div class="event-date">
                     <span class="event-day">{{ evt.date | date:'dd' }}</span>

@@ -27,21 +27,17 @@ const requireApproval = async (req, res, next) => {
 // ──────────────────────────────────────────
 router.get('/events', requireApproval, async (req, res) => {
     try {
-        // Fetch all events
-        const { data: events, error: eventsErr } = await supabaseAdmin
-            .from('events')
-            .select('*')
-            .order('date', { ascending: true });
+        // Fetch events and user registrations concurrently
+        const [eventsRes, registrationsRes] = await Promise.all([
+            supabaseAdmin.from('events').select('*').order('date', { ascending: true }),
+            supabaseAdmin.from('event_registrations').select('event_id').eq('student_id', req.user.id)
+        ]);
 
-        if (eventsErr) throw eventsErr;
+        if (eventsRes.error) throw eventsRes.error;
+        if (registrationsRes.error) throw registrationsRes.error;
 
-        // Fetch user's registrations
-        const { data: registrations, error: regErr } = await supabaseAdmin
-            .from('event_registrations')
-            .select('event_id')
-            .eq('student_id', req.user.id);
-
-        if (regErr) throw regErr;
+        const events = eventsRes.data;
+        const registrations = registrationsRes.data;
 
         const registeredEventIds = new Set(registrations.map(r => r.event_id));
 

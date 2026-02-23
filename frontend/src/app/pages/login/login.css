@@ -30,7 +30,7 @@
 .g1 {
     width: 720px;
     height: 720px;
-    background: radial-gradient(circle, rgba(255, 153, 0, 0.16), transparent 65%);
+    background: radial-gradient(circle, rgba(255, 153, 0, 0.25), transparent 65%);
     top: -200px;
     left: -200px;
 }

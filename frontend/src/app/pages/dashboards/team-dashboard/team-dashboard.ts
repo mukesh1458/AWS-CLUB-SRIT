@@ -17,15 +17,23 @@ import { RevealDirective } from '../../../directives/reveal.directive';
 export class TeamDashboard implements OnInit {
   pendingUsers: any[] = [];
   teamUser: any;
+  isLoadingUsers = true;
 
   events: any[] = [];
   isDeletingEvent: { [key: string]: boolean } = {};
+  isLoadingEvents = true;
 
   resources: any[] = [];
   isDeletingResource: { [key: string]: boolean } = {};
+  isLoadingResources = true;
 
   // Modals view state ('main', 'event', 'resource')
-  activeView: 'main' | 'event' | 'resource' = 'main';
+  activeView: 'main' | 'event' | 'resource' | 'registrations' = 'main';
+
+  // Event Registrations state
+  selectedEvent: any = null;
+  eventRegistrations: any[] = [];
+  isFetchingRegistrations: { [key: string]: boolean } = {};
 
   // Avatar upload state
   avatarUrl = '';
@@ -75,9 +83,16 @@ export class TeamDashboard implements OnInit {
   }
 
   loadPendingUsers() {
+    this.isLoadingUsers = true;
     this.adminService.getPendingUsers().subscribe({
-      next: (res) => { this.pendingUsers = res.users || []; },
-      error: (err) => { console.error('Failed to fetch pending users', err); }
+      next: (res) => {
+        this.pendingUsers = res.users || [];
+        this.isLoadingUsers = false;
+      },
+      error: (err) => {
+        console.error('Failed to fetch pending users', err);
+        this.isLoadingUsers = false;
+      }
     });
   }
 
@@ -115,7 +130,7 @@ export class TeamDashboard implements OnInit {
   }
 
   // ── Modals & Views ──
-  setView(view: 'main' | 'event' | 'resource') {
+  setView(view: 'main' | 'event' | 'resource' | 'registrations') {
     this.activeView = view;
     this.alertMsg = '';
     if (view === 'event') {
@@ -127,6 +142,10 @@ export class TeamDashboard implements OnInit {
       this.resourceFile = null;
       this.loadResources(); // refresh resources list
     }
+    if (view === 'main' || view === 'event') {
+      this.selectedEvent = null;
+      this.eventRegistrations = [];
+    }
   }
 
   showAlert(type: 'success' | 'error', message: string) {
@@ -137,11 +156,33 @@ export class TeamDashboard implements OnInit {
 
   // ── Event Studio ──
   loadEvents() {
-    // Reusing the student endpoint since it fetches all events
-    // But we need to use HttpClient directly if TeamService doesn't have a getEvents yet
+    this.isLoadingEvents = true;
     this.http.get<any>('http://127.0.0.1:3001/api/student/events').subscribe({
-      next: (res) => { this.events = res.events || []; },
-      error: (err) => { console.error('Failed to fetch events', err); }
+      next: (res) => {
+        this.events = res.events || [];
+        this.isLoadingEvents = false;
+      },
+      error: (err) => {
+        console.error('Failed to fetch events', err);
+        this.isLoadingEvents = false;
+      }
+    });
+  }
+
+  viewRegistrations(event: any) {
+    this.isFetchingRegistrations[event.id] = true;
+    this.teamService.getEventRegistrations(event.id).subscribe({
+      next: (res) => {
+        this.selectedEvent = event;
+        this.eventRegistrations = res.registrations || [];
+        this.isFetchingRegistrations[event.id] = false;
+        this.setView('registrations');
+      },
+      error: (err) => {
+        console.error('Failed to fetch registrations', err);
+        this.showAlert('error', 'Failed to fetch event registrations.');
+        this.isFetchingRegistrations[event.id] = false;
+      }
     });
   }
 
@@ -284,9 +325,16 @@ export class TeamDashboard implements OnInit {
     });
   }
   loadResources() {
+    this.isLoadingResources = true;
     this.http.get<any>('http://127.0.0.1:3001/api/public/resources').subscribe({
-      next: (res) => { this.resources = res.resources || []; },
-      error: (err) => { console.error('Failed to fetch resources', err); }
+      next: (res) => {
+        this.resources = res.resources || [];
+        this.isLoadingResources = false;
+      },
+      error: (err) => {
+        console.error('Failed to fetch resources', err);
+        this.isLoadingResources = false;
+      }
     });
   }
 

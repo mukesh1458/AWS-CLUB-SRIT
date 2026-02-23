@@ -1,7 +1,11 @@
 const express = require('express');
 const { supabaseAdmin } = require('../supabaseClient');
+const NodeCache = require('node-cache');
 
 const router = express.Router();
+
+// Initialize cache with 5 minutes standard TTL
+const publicCache = new NodeCache({ stdTTL: 300 });
 
 // ──────────────────────────────────────────
 // GET /api/public/events
@@ -9,13 +13,18 @@ const router = express.Router();
 // ──────────────────────────────────────────
 router.get('/events', async (req, res) => {
     try {
+        const cacheKey = 'public_events';
+        const cached = publicCache.get(cacheKey);
+        if (cached) return res.status(200).json({ events: cached });
+
         const { data, error } = await supabaseAdmin
             .from('events')
             .select('*')
-            .eq('is_deleted', false)
             .order('date', { ascending: true });
 
         if (error) throw error;
+
+        publicCache.set(cacheKey, data);
         res.status(200).json({ events: data });
     } catch (err) {
         console.error('Public events error:', err);
@@ -29,12 +38,18 @@ router.get('/events', async (req, res) => {
 // ──────────────────────────────────────────
 router.get('/resources', async (req, res) => {
     try {
+        const cacheKey = 'public_resources';
+        const cached = publicCache.get(cacheKey);
+        if (cached) return res.status(200).json({ resources: cached });
+
         const { data, error } = await supabaseAdmin
             .from('resources')
             .select('*')
             .order('created_at', { ascending: false });
 
         if (error) throw error;
+
+        publicCache.set(cacheKey, data);
         res.status(200).json({ resources: data });
     } catch (err) {
         console.error('Public resources error:', err);
@@ -48,13 +63,19 @@ router.get('/resources', async (req, res) => {
 // ──────────────────────────────────────────
 router.get('/stats', async (req, res) => {
     try {
+        const cacheKey = 'public_stats';
+        const cached = publicCache.get(cacheKey);
+        if (cached !== undefined) return res.status(200).json({ totalEvents: cached });
+
         const { count, error } = await supabaseAdmin
             .from('events')
-            .select('*', { count: 'exact', head: true })
-            .eq('is_deleted', false);
+            .select('*', { count: 'exact', head: true });
 
         if (error) throw error;
-        res.status(200).json({ totalEvents: count || 0 });
+
+        const total = count || 0;
+        publicCache.set(cacheKey, total);
+        res.status(200).json({ totalEvents: total });
     } catch (err) {
         console.error('Public stats error:', err);
         res.status(500).json({ error: err.message, totalEvents: 0 });

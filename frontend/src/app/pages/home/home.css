@@ -20,7 +20,7 @@
     background-image: url('https://i.ytimg.com/vi/2RkM1WT1gsE/maxresdefault.jpg');
     background-size: cover;
     background-position: center;
-    opacity: 0.25;
+    opacity: 0.35;
     mix-blend-mode: screen;
     filter: saturate(0) contrast(1.2);
     -webkit-mask-image: radial-gradient(ellipse at 50% 30%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 75%);

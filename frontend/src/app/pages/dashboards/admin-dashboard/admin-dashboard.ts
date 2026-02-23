@@ -17,6 +17,9 @@ export class AdminDashboard implements OnInit {
   isApproving: { [key: string]: boolean } = {};
   isRejecting: { [key: string]: boolean } = {};
 
+  isLoadingUsers = true;
+  isLoadingStats = true;
+
   // Live stats
   totalStudents: number | null = null;
   totalEvents: number | null = null;
@@ -35,20 +38,32 @@ export class AdminDashboard implements OnInit {
   }
 
   loadPendingUsers() {
+    this.isLoadingUsers = true;
     this.adminService.getPendingUsers().subscribe({
-      next: (res) => { this.pendingUsers = res.users || []; },
-      error: (err) => { console.error('Failed to fetch pending users', err); }
+      next: (res) => {
+        this.pendingUsers = res.users || [];
+        this.isLoadingUsers = false;
+      },
+      error: (err) => {
+        console.error('Failed to fetch pending users', err);
+        this.isLoadingUsers = false;
+      }
     });
   }
 
   loadStats() {
+    this.isLoadingStats = true;
     this.adminService.getStats().subscribe({
       next: (res) => {
         this.totalStudents = res.totalStudents;
         this.totalEvents = res.totalEvents;
         this.totalResources = res.totalResources;
+        this.isLoadingStats = false;
       },
-      error: (err) => { console.error('Failed to fetch stats', err); }
+      error: (err) => {
+        console.error('Failed to fetch stats', err);
+        this.isLoadingStats = false;
+      }
     });
   }
 

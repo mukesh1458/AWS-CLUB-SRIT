@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth/auth.service';
 import { StudentService } from '../../services/student/student.service';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-events',
@@ -41,7 +42,7 @@ export class Events implements OnInit {
     this.isLoading = true;
     // If logged in and approved, we can use the student endpoint which tells us if we are already registered
     if (this.authService.isLoggedIn()) {
-      this.http.get<any>('http://127.0.0.1:3001/api/student/events').subscribe({
+      this.http.get<any>(`${environment.apiUrl}/student/events`).subscribe({
         next: (res) => {
           this.events = res.events || [];
           this.isLoading = false;
@@ -58,7 +59,7 @@ export class Events implements OnInit {
 
   loadPublicEvents() {
     this.isLoading = true;
-    this.http.get<any>('http://127.0.0.1:3001/api/public/events').subscribe({
+    this.http.get<any>(`${environment.apiUrl}/public/events`).subscribe({
       next: (res) => {
         this.events = res.events || [];
         this.isLoading = false;

@@ -80,4 +80,40 @@ router.delete('/events/:id', async (req, res) => {
     }
 });
 
+// ──────────────────────────────────────────
+// GET /api/team/events/:id/registrations
+// Get list of students registered for an event
+// ──────────────────────────────────────────
+router.get('/events/:id/registrations', async (req, res) => {
+    try {
+        const { data, error } = await supabaseAdmin
+            .from('event_registrations')
+            .select(`
+                created_at,
+                profiles:student_id (
+                    id,
+                    full_name,
+                    email,
+                    year,
+                    branch
+                )
+            `)
+            .eq('event_id', req.params.id)
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        // Flatten the nested payload format to be easier for the frontend
+        const formattedData = data.map(reg => ({
+            registered_at: reg.created_at,
+            ...reg.profiles
+        }));
+
+        res.status(200).json({ registrations: formattedData });
+    } catch (err) {
+        console.error('Fetch event registrations error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = router;

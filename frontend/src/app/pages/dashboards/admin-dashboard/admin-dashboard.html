@@ -22,28 +22,42 @@
             <div class="stat-card sc-orange">
                 <div class="sc-icon"><i class="bi bi-hourglass-split"></i></div>
                 <div class="sc-body">
-                    <span class="sc-val">{{ pendingUsers.length }}</span>
+                    <span class="sc-val" *ngIf="!isLoadingStats">{{ pendingUsers.length }}</span>
+                    <span class="sc-val" *ngIf="isLoadingStats">
+                        <div class="spinner-border spinner-border-sm text-secondary"></div>
+                    </span>
                     <span class="sc-label">Pending</span>
                 </div>
             </div>
             <div class="stat-card sc-cyan">
                 <div class="sc-icon"><i class="bi bi-calendar-event"></i></div>
                 <div class="sc-body">
-                    <span class="sc-val">{{ totalEvents !== null ? totalEvents : '…' }}</span>
+                    <span class="sc-val" *ngIf="!isLoadingStats">{{ totalEvents !== null ? totalEvents : '…' }}</span>
+                    <span class="sc-val" *ngIf="isLoadingStats">
+                        <div class="spinner-border spinner-border-sm text-secondary"></div>
+                    </span>
                     <span class="sc-label">Total Events</span>
                 </div>
             </div>
             <div class="stat-card sc-green">
                 <div class="sc-icon"><i class="bi bi-people-fill"></i></div>
                 <div class="sc-body">
-                    <span class="sc-val">{{ totalStudents !== null ? totalStudents : '…' }}</span>
+                    <span class="sc-val" *ngIf="!isLoadingStats">{{ totalStudents !== null ? totalStudents : '…'
+                        }}</span>
+                    <span class="sc-val" *ngIf="isLoadingStats">
+                        <div class="spinner-border spinner-border-sm text-secondary"></div>
+                    </span>
                     <span class="sc-label">Approved Students</span>
                 </div>
             </div>
             <div class="stat-card sc-purple">
                 <div class="sc-icon"><i class="bi bi-folder2-open"></i></div>
                 <div class="sc-body">
-                    <span class="sc-val">{{ totalResources !== null ? totalResources : '…' }}</span>
+                    <span class="sc-val" *ngIf="!isLoadingStats">{{ totalResources !== null ? totalResources : '…'
+                        }}</span>
+                    <span class="sc-val" *ngIf="isLoadingStats">
+                        <div class="spinner-border spinner-border-sm text-secondary"></div>
+                    </span>
                     <span class="sc-label">Resources Uploaded</span>
                 </div>
             </div>
@@ -57,15 +71,25 @@
                 <div class="dcard-header">
                     <div class="dcard-title"><i class="bi bi-person-check-fill text-warning"></i> Pending Approvals
                     </div>
-                    <span class="pill pill-warn" *ngIf="pendingUsers.length > 0">{{ pendingUsers.length }} new</span>
+                    <span class="pill pill-warn" *ngIf="pendingUsers.length > 0 && !isLoadingUsers">{{
+                        pendingUsers.length }} new</span>
                 </div>
 
-                <div *ngIf="pendingUsers.length === 0" class="empty-state">
+                <!-- Loading State -->
+                <div *ngIf="isLoadingUsers" class="empty-state">
+                    <div class="spinner-border text-warning mb-3" style="width: 3rem; height: 3rem;" role="status">
+                    </div>
+                    <p>Loading pending students...</p>
+                </div>
+
+                <!-- Empty State -->
+                <div *ngIf="!isLoadingUsers && pendingUsers.length === 0" class="empty-state">
                     <i class="bi bi-check2-circle text-success"></i>
                     <p>All caught up — no pending students!</p>
                 </div>
 
-                <div class="list-group list-group-flush pending-list" *ngIf="pendingUsers.length > 0">
+                <div class="list-group list-group-flush pending-list"
+                    *ngIf="!isLoadingUsers && pendingUsers.length > 0">
                     <div *ngFor="let user of pendingUsers" class="list-group-item pending-item">
                         <div class="user-meta">
                             <h6 class="mb-1 fw-bold text-white">{{ user.full_name }}</h6>
